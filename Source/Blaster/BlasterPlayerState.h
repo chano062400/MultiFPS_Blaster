@@ -7,6 +7,9 @@
 #include "BlasterTypes/Team.h"
 #include "BlasterPlayerState.generated.h"
 
+class ABlasterCharacter;
+class ABlasterController;
+
 /**
  * 
  */
@@ -27,12 +30,13 @@ public:
 	void AddToScore(float ScoreAmount);
 
 	void AddToDefeat(int32 DefeatAmount);
+
 private:
 	UPROPERTY()
-	class ABlasterCharacter* BlasterCharacter;
+	ABlasterCharacter* BlasterCharacter;
 
 	UPROPERTY()
-	class ABlasterController* BlasterController;
+	ABlasterController* BlasterController;
 
 	UPROPERTY(ReplicatedUsing = OnRep_Defeat)
 	int32 Defeat;
@@ -41,10 +45,12 @@ private:
 	ETeam Team = ETeam::ET_NoTeam;
 
 	UFUNCTION()
-		void OnRep_Team();
+	void OnRep_Team();
 
 public:
 
 	FORCEINLINE ETeam GetTeam() { return Team; }
+	
 	void SetTeam(ETeam TeamToSet);
+
 };

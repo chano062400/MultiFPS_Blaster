@@ -14,10 +14,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "WeaponTypes.h"
 
-// Sets default values
 AWeapon::AWeapon()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 	SetReplicateMovement(true); // 서버와 클라이언트에서 무기위치가 동일하도록
@@ -59,6 +57,7 @@ FVector AWeapon::TraceEndScatter(const FVector& HitTarget)
 	const FVector EndLoc = SphereCenter + RandVec; // 산탄된 탄 위치.
 	const FVector ToEndLoc = EndLoc - TraceStart;
 
+	//Debug
 	/*DrawDebugSphere(GetWorld(), SphereCenter, SphereRadius, 12, FColor::Red, true);
 	DrawDebugSphere(GetWorld(), EndLoc, 4.f, 12, FColor::Orange, true);
 	DrawDebugLine(GetWorld(), TraceStart, FVector(TraceStart + ToEndLoc * TRACE_LENGTH / ToEndLoc.Size()), FColor::Cyan, true);*/
@@ -67,7 +66,6 @@ FVector AWeapon::TraceEndScatter(const FVector& HitTarget)
 
 }
 
-// Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
@@ -82,6 +80,7 @@ void AWeapon::BeginPlay()
 		PickupWidget->SetVisibility(false);
 	}
 
+	//Validation Check
 	/*if (!HasAuthority())
 	{
 		FireDelay = 0.0001f;

@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "ElimAnnouncement.generated.h"
 
+class UHorizontalBox;
+class UTextBlock;
+
 /**
  * 
  */
@@ -18,8 +21,8 @@ public:
 	void SetAnnouncementText(FString AttackerName, FString VictimName);
 
 	UPROPERTY(meta = (BindWidget))
-	class UHorizontalBox* AnnouncementBox;
+	UHorizontalBox* AnnouncementBox;
 
 	UPROPERTY(meta = (BindWidget))
-		class UTextBlock* AnnouncementText;
+	UTextBlock* AnnouncementText;
 };

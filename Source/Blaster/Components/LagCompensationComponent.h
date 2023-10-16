@@ -5,6 +5,8 @@
 #include "Components/ActorComponent.h"
 #include "LagCompensationComponent.generated.h"
 
+class ABlasterController;
+
 USTRUCT(BlueprintType)
 struct FBoxInformation
 {
@@ -77,7 +79,7 @@ public:
 
 	void ShowFramePackage(const FFramePackage& Package, FColor Color);
 
-	//HitScan
+	/* HitScan */
 	FServerSideRewindResult ServerSideRewind(class ABlasterCharacter* HitCharacter,
 		const FVector_NetQuantize& TraceStart,
 		const FVector_NetQuantize& HitLocation,
@@ -90,7 +92,8 @@ public:
 		const FVector_NetQuantize& HitLocation,
 		float HitTime
 	);
-	//Projectile
+	
+	/* Projectile */
 	
 	FServerSideRewindResult ProjectileServerSideRewind(
 		ABlasterCharacter* HitCharacter,
@@ -106,7 +109,7 @@ public:
 		float HitTime
 	);
 
-	//Shotgun
+	/* Shotgun */
 	FShotgunServerSideRewindResult ShotgunServerSideRewind(const TArray<ABlasterCharacter*>& HitCharacters,
 		const FVector_NetQuantize& TraceStart,
 		const TArray<FVector_NetQuantize>& HitLocations,
@@ -118,20 +121,11 @@ public:
 			const TArray<FVector_NetQuantize>& HitLocations,
 			float HitTime);
 
-	
-
-	UPROPERTY()
-		ABlasterCharacter* Character;
-
-	UPROPERTY()
-		class ABlasterController* Controller;
-
 protected:
 	virtual void BeginPlay() override;
 
 	FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime); //const 참조형식의 매개변수를 사용해서 메모리 재할당을 안함.
 
-	
 	void CacheBoxPositions(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage);
 
 	void MoveBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package);
@@ -144,7 +138,16 @@ protected:
 
 	FFramePackage GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime);
 
-	//HitScan
+	UPROPERTY(EditAnywhere)
+	float MaxRecordTime = 4.f;
+
+	UPROPERTY()
+		ABlasterCharacter* Character;
+
+	UPROPERTY()
+		ABlasterController* Controller;
+
+	/* HitScan */
 
 	FServerSideRewindResult ConfirmHit(const FFramePackage& Package,
 		ABlasterCharacter* HitCharacter,
@@ -172,6 +175,5 @@ private:
 		
 	TDoubleLinkedList<FFramePackage> FrameHistory;
 
-	UPROPERTY(EditAnywhere)
-		float MaxRecordTime = 4.f;
+
 };

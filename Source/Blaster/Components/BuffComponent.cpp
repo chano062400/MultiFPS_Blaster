@@ -7,15 +7,12 @@
 UBuffComponent::UBuffComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
 
 void UBuffComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 }
 
 

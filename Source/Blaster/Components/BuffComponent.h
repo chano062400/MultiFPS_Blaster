@@ -19,17 +19,6 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void Heal(float HealAmount, float HealingTime);
-
-	void RepleninshShield(float ReplenishAmount, float ReplenishingTime);
-
-	void BuffSpeed(float BaseBuffSpeed, float CrouchBuffSpeed, float BuffTime); 
-
-	void SetInitialSpeed(float BaseSpeed, float CrouchSpeed);
-
-	void SetInitialJump(float ZVelocity);
-
-	void BuffJump(float BuffJumpZVelocity, float BuffTime);
 
 protected:
 	virtual void BeginPlay() override;
@@ -63,7 +52,7 @@ private:
 	void ResetSpeed();
 
 	UFUNCTION(NetMulticast, Reliable)
-		void MulticastBuffSpeed(float BaseSpeed, float CrouchSpeed);
+	void MulticastBuffSpeed(float BaseSpeed, float CrouchSpeed);
 
 	/* Jump Buff */
 
@@ -84,4 +73,17 @@ private:
 
 	float AmountToReplenish = 0.f;
 
+public:
+
+	void Heal(float HealAmount, float HealingTime);
+
+	void RepleninshShield(float ReplenishAmount, float ReplenishingTime);
+
+	void BuffSpeed(float BaseBuffSpeed, float CrouchBuffSpeed, float BuffTime);
+
+	void SetInitialSpeed(float BaseSpeed, float CrouchSpeed);
+
+	void SetInitialJump(float ZVelocity);
+
+	void BuffJump(float BuffJumpZVelocity, float BuffTime);
 };

@@ -6,6 +6,9 @@
 #include "Weapon.h"
 #include "HitScanWeapon.generated.h"
 
+class UParticleSystem;
+class USoundCue;
+
 /**
  * 
  */
@@ -17,35 +20,23 @@ public:
 
 	virtual void Fire(const FVector& HitTarget) override;
 	
-	
 protected:
 
-	
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ImpactParticles;
 
 	UPROPERTY(EditAnywhere)
-		class UParticleSystem* ImpactParticles;
+	UParticleSystem* BeamParticles;
 
 	UPROPERTY(EditAnywhere)
-		UParticleSystem* BeamParticles;
+	UParticleSystem* MuzzleFlash;
 
 	UPROPERTY(EditAnywhere)
-		UParticleSystem* MuzzleFlash;
+	USoundCue* FireSound;
 
 	UPROPERTY(EditAnywhere)
-		class	USoundCue* FireSound;
-
-	UPROPERTY(EditAnywhere)
-		USoundCue* HitSound;
-
-	
+	USoundCue* HitSound;
 
 	void WeaponTraceHit(const FVector& TraceStart, const FVector& HitTarget, FHitResult& OutHit);
-
-private:
-
-	
-
-	
-
 
 };

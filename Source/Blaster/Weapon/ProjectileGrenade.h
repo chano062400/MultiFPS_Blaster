@@ -6,6 +6,8 @@
 #include "Projectile.h"
 #include "ProjectileGrenade.generated.h"
 
+class USoundCue;
+
 /**
  * 
  */
@@ -30,5 +32,5 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere)
-		class USoundCue* BounceSound;
+	USoundCue* BounceSound;
 };

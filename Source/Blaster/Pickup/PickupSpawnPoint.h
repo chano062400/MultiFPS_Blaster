@@ -19,7 +19,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-		TArray<TSubclassOf<class APickup>> PickupClasses;
+	TArray<TSubclassOf<class APickup>> PickupClasses;
 
 	UPROPERTY()
 	APickup* SpawnedPickup;

@@ -9,6 +9,11 @@
 #include "Blaster/BlasterTypes/CombatState.h"
 #include "CombatComponent.generated.h"
 
+class AFlag;
+class ABlasterCharacter;
+class ABlasterController;
+class ABlasterHUD;
+class AWeapon;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BLASTER_API UCombatComponent : public UActorComponent
@@ -25,32 +30,8 @@ public:
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(BlueprintCallable)
-	void FinishReloading();
-
-	UFUNCTION(BlueprintCallable)
-	void FInishSwapWeapon();
-
-	UFUNCTION(BlueprintCallable)
-	void FinishSwapAttachWeapon();
-
-	void FirePressed(bool bPressed);
-
-	UFUNCTION(BlueprintCallable)
-	void ShotgunShellReload();
-
-	void JumpToShotgunEnd();
-
-	UFUNCTION(BlueprintCallable)
-		void LaunchGrenade();
-
-	UFUNCTION(Server, Reliable)
-		void ServerLaunchGrenade(const FVector_NetQuantize& Target);
-
-	void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
-
-
 protected:
+	
 	virtual void BeginPlay() override;
 
 	void EquipWeapon(class AWeapon* Weapon);
@@ -90,7 +71,7 @@ protected:
 	void OnRep_EquippedWeapon();
 
 	UFUNCTION()
-		void OnRep_SecondaryWeapon();
+	void OnRep_SecondaryWeapon();
 
 	void Fire();
 
@@ -111,10 +92,10 @@ protected:
 	void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
 
 	UFUNCTION(Server, Reliable, WithValidation)
-		void ServerShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets, float FireDelay);
+	void ServerShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets, float FireDelay);
 
 	UFUNCTION(NetMulticast, Reliable)
-		void MulticastShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets);
+	void MulticastShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets);
 
 	void ThrowGrenade();
 
@@ -141,14 +122,15 @@ protected:
 	bool bLocallyReloading = false;
 
 private:
+	
 	UPROPERTY()
-	class ABlasterCharacter* Character;
+	ABlasterCharacter* Character;
 
 	UPROPERTY()
-	class ABlasterController* Controller;
+	ABlasterController* Controller;
 
 	UPROPERTY()
-	class ABlasterHUD* HUD;
+	ABlasterHUD* HUD;
 	
 	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	AWeapon* EquippedWeapon;
@@ -184,21 +166,21 @@ private:
 	float DefaultFOV;
 
 	UPROPERTY(EditAnywhere, Category= Combat)
-		float ZoomedFOV = 30.f;
+	float ZoomedFOV = 30.f;
 
 	float CurrentFOV;
 
 	UPROPERTY(EditAnywhere)
-		float ZoomInterpSpeed = 20.f;
+	float ZoomInterpSpeed = 20.f;
 
 	void InterpFOV(float DeltaTime);
 
 	FTimerHandle FireTimer;
 
-	
 	bool bCanFire = true;
 
 	void StartFireTimer();
+	
 	void FireTimerFinished();
 
 	bool CanFire();
@@ -214,7 +196,7 @@ private:
 	TMap<EWeaponType, int32> CarriedAmmoMap;
 
 	UPROPERTY(EditAnywhere)
-		int32 MaxCarriedAmmo = 500;
+	int32 MaxCarriedAmmo = 500;
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingARAmmo = 100;
@@ -223,19 +205,19 @@ private:
 	int32 StartingRocketAmmo = 10;
 
 	UPROPERTY(EditAnywhere)
-		int32 StartingPistolAmmo = 30;
+	int32 StartingPistolAmmo = 30;
 
 	UPROPERTY(EditAnywhere)
-		int32 StartingSMGAmmo = 50;
+	int32 StartingSMGAmmo = 50;
 
 	UPROPERTY(EditAnywhere)
-		int32 StartingShotgunAmmo = 15;
+	int32 StartingShotgunAmmo = 15;
 
 	UPROPERTY(EditAnywhere)
-		int32 StartingSniperAmmo = 20;
+	int32 StartingSniperAmmo = 20;
 
 	UPROPERTY(EditAnywhere)
-		int32 StartingGrenadeLauncherAmmo = 10;
+	int32 StartingGrenadeLauncherAmmo = 10;
  
 	void InitializeCarriedAmmo();
 
@@ -256,7 +238,7 @@ private:
 	void OnRep_Grenades();
 
 	UPROPERTY(EditAnywhere)
-		int32 MaxGrenades = 4;
+	int32 MaxGrenades = 4;
 
 	void UpdateHUDGrenades();
 
@@ -267,11 +249,37 @@ private:
 	void OnRep_bHoldingTheFlag();
 
 	UPROPERTY()
-	class AFlag* TheFlag;
+	AFlag* TheFlag;
 
 public:
 
 	FORCEINLINE int32 GetGrenades()  const {return Grenades; }
 
 	bool ShouldSwapWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishReloading();
+
+	UFUNCTION(BlueprintCallable)
+	void FInishSwapWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishSwapAttachWeapon();
+
+	void FirePressed(bool bPressed);
+
+	UFUNCTION(BlueprintCallable)
+	void ShotgunShellReload();
+
+	void JumpToShotgunEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void LaunchGrenade();
+
+	UFUNCTION(Server, Reliable)
+	void ServerLaunchGrenade(const FVector_NetQuantize& Target);
+
+	void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
+
+
 };

@@ -6,6 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "CharacterOverlay.generated.h"
 
+class UProgressBar;
+class UTextBlock;
+class UImage;
+
 /**
  * 
  */
@@ -16,10 +20,10 @@ class BLASTER_API UCharacterOverlay : public UUserWidget
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	class UProgressBar* HealthBar;
+	UProgressBar* HealthBar;
 	
 	UPROPERTY(meta = (BindWidget))
-		class UTextBlock* HealthText;
+	UTextBlock* HealthText;
 
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* ShieldBar;
@@ -28,37 +32,36 @@ public:
 	UTextBlock* ShieldText;
 
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* ScoreAmount;
+	UTextBlock* ScoreAmount;
 	
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* BlueTeamScore;
+	UTextBlock* BlueTeamScore;
 	
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* RedTeamScore;
+	UTextBlock* RedTeamScore;
 	
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* TeamScoreSpacer;
+	UTextBlock* TeamScoreSpacer;
 
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* DefeatAmount;
+	UTextBlock* DefeatAmount;
 
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* WeaponAmmoAmount;
+	UTextBlock* WeaponAmmoAmount;
 
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* CarriedAmmoAmount;
+	UTextBlock* CarriedAmmoAmount;
 
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* MatchCountdownText;
+	UTextBlock* MatchCountdownText;
 
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* GrenadeText;
+	UTextBlock* GrenadeText;
 
 	UPROPERTY(meta = (BindWidget))
-		class UImage* HighPingImage;
+	UImage* HighPingImage;
 	
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* HighPingAnimation;
 
-	
 };

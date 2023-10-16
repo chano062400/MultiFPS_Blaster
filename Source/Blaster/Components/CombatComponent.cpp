@@ -20,8 +20,6 @@
 #include "Blaster/Weapon/Shotgun.h"
 #include "Blaster/Weapon/Flag.h"
 
-//발사체를 쏘지 않고 라인트레이스로 타격.
-
 UCombatComponent::UCombatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;

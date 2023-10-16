@@ -6,6 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+class UParticleSystemComponent;
+class UParticleSystem;
+class USoundBase;
+class UBoxComponent;
+class UProjectileMovementComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS()
 class BLASTER_API AProjectile : public AActor
@@ -14,8 +21,6 @@ class BLASTER_API AProjectile : public AActor
 	
 public:	
 	AProjectile();
-
-
 
 	virtual void Destroyed() override;
 	
@@ -31,11 +36,11 @@ public:
 	UPROPERTY(EditAnywhere)
 	float InitialSpeed = 15000.f;
 
-	// Only set this for Grenades and Rockets
+	// 수류탄, 로켓만 설정.
 	UPROPERTY(EditAnywhere)
 	float Damage = 20.f;
 
-	// Doesn't matter for Grenades and Rockets
+	// 수류탄, 로켓X
 	UPROPERTY(EditAnywhere)
 	float HeadShotDamage = 40.f;
 
@@ -45,39 +50,39 @@ protected:
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	UPROPERTY(EditAnywhere)
-		class	UParticleSystem* ImpactParticle;
-
-	UPROPERTY(EditAnywhere)
-		class USoundBase* ImpactSound;
-
-	UPROPERTY(EditAnywhere)
-		class UBoxComponent* CollisionBox;
-
-	UPROPERTY(VisibleAnywhere)
-	class UProjectileMovementComponent* ProjectileMovementComponent;
-
-	UPROPERTY(EditAnywhere)
-		class UNiagaraSystem* TrailSystem;
-
-	UPROPERTY()
-		class UNiagaraComponent* TrailSystemComponent;
+	virtual void ExplodeDamage();
 
 	void SpawnTrailSystem();
-
-	FTimerHandle DestroyTimer;
-
-	UPROPERTY(EditAnywhere)
-		float DestroyTime = 3.f;
 
 	void DestroyTimerFinished();
 
 	void StartDestroyTimer();
 
-	UPROPERTY(VisibleAnywhere)
-		UStaticMeshComponent* ProjectileMesh;
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* ImpactParticle;
 
-	virtual void ExplodeDamage();
+	UPROPERTY(EditAnywhere)
+	USoundBase* ImpactSound;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* CollisionBox;
+
+	UPROPERTY(VisibleAnywhere)
+	UProjectileMovementComponent* ProjectileMovementComponent;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* TrailSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* TrailSystemComponent;
+
+	FTimerHandle DestroyTimer;
+
+	UPROPERTY(EditAnywhere)
+	float DestroyTime = 3.f;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ProjectileMesh;
 
 	UPROPERTY(EditAnywhere)
 	float DamageInnerRadius = 200.f;
@@ -86,20 +91,15 @@ protected:
 	float DamageOuterRadius = 500.f;
 
 public:	
+	
 	virtual void Tick(float DeltaTime) override;
 
 private:
 
 	UPROPERTY(EditAnywhere)
-		 UParticleSystem* Tracer; 
+	UParticleSystem* Tracer; 
 	 
 	UPROPERTY()
-	class UParticleSystemComponent* TracerComponent;
-
-	
-
-
-public:
-
+	UParticleSystemComponent* TracerComponent;
 
 };

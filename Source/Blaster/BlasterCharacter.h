@@ -12,6 +12,24 @@
 #include "Blaster/BlasterTypes/Team.h"
 #include "BlasterCharacter.generated.h"
 
+class UInputMappingContext;
+class UInputAction;
+class USpringArmComponent;
+class UCameraComponent;
+class UWidgetComponent;
+class AWeapon;
+class UAnimMontage;
+class UBuffComponent;
+class ULagCompensationComponent;
+class ABlasterController;
+class UCharacterOverlay;
+class ABlasterPlayerState;
+class UNiagaraComponent;
+class USoundCue;
+class UNiagaraSystem;
+class ABlasterGameMode;
+class UCombatComponent;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftGame);
 
 UCLASS()
@@ -69,12 +87,12 @@ public:
 	void SpawnDefaultWeapon();
 
 	UPROPERTY()
-		TMap<FName, class UBoxComponent*> HitCollisionBoxes;
+	TMap<FName, class UBoxComponent*> HitCollisionBoxes;
 
 	bool bFinishedSwappingWeapon = false;
 
 	UFUNCTION(Server, Reliable)
-		void ServerLeaveGame();
+	void ServerLeaveGame();
 
 	FOnLeftGame OnLeftGame;
 
@@ -94,42 +112,6 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Input)
-		class 	UInputMappingContext* CharacterMappingContext;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Input)
-	class	UInputAction* MoveAction;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Input)
-		UInputAction* LookAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* JumpAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* EquipAction;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* CrouchAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* AimAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* AimReleaseAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* FireAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* FireReleaseAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* ReloadAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
-		UInputAction* ThrowGrenadeAction;
-
 	virtual void Move(const FInputActionValue& Value);
 
 	virtual void Look(const FInputActionValue& Value);
@@ -139,7 +121,7 @@ protected:
 	virtual void Equip(const FInputActionValue& Value);
 	
 	UFUNCTION(Server, Reliable)
-		void ServerEquip();
+	void ServerEquip();
 
 	virtual void CrouchPressed();
 	
@@ -166,18 +148,6 @@ protected:
 
 	void SimProxiesTurn();
 
-	UPROPERTY(EditAnywhere, Category = "Player Stats")
-	float MaxHealth = 100.f;
-	
-	UPROPERTY(ReplicatedUsing = OnRep_Health, VisibleAnywhere, Category = "Player Stats")
-	float Health = 100.f;
-	
-	UPROPERTY(EditAnywhere, Category = "Player Stats")
-	float MaxShield = 100.f;
-	
-	UPROPERTY(ReplicatedUsing = OnRep_Shield, VisibleAnywhere, Category = "Player Stats")
-	float Shield = 100.f;
-	
 	UFUNCTION()
 	void OnRep_Health(float LastHealth);
 	
@@ -185,6 +155,18 @@ protected:
 	void OnRep_Shield(float LastShield);
 
 	void PollInit();
+
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+		float MaxHealth = 100.f;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Health, VisibleAnywhere, Category = "Player Stats")
+		float Health = 100.f;
+
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+		float MaxShield = 100.f;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Shield, VisibleAnywhere, Category = "Player Stats")
+		float Shield = 100.f;
 
 	/* Hit Boxes (Server Side Rewind)*/
 
@@ -242,47 +224,96 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* foot_r;
 
-	
+	/* Input */
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Input)
+	UInputMappingContext* CharacterMappingContext;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Input)
+	UInputAction* MoveAction;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Input)
+	UInputAction* LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* JumpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* EquipAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* CrouchAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* AimAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* AimReleaseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* FireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* FireReleaseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* ReloadAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = Input)
+	UInputAction* ThrowGrenadeAction;
+
+	bool bInputsSet = false;
 
 private:
-
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* Grenade;
-
-	UPROPERTY(VisibleAnywhere, Category = Camera)
-		class USpringArmComponent* SpringArm;
-
-	UPROPERTY(VisibleAnywhere, Category = Camera)
-		class UCameraComponent* Camera;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* OverHeadWidget;
-
-	UPROPERTY(ReplicatedUsing =  OnRep_OverlappiongWeapon)
-	class AWeapon* OverlappingWeapon;
 
 	UFUNCTION()
 	void OnRep_OverlappiongWeapon(AWeapon* PrevWeapon);
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowprivateAccess = "true"))
-		class UCombatComponent* Combat;
-	
-	UPROPERTY(VisibleAnywhere)
-		class UBuffComponent* BuffComp;
-	
-	UPROPERTY(VisibleAnywhere)
-		class ULagCompensationComponent* LagCompensation;
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappiongWeapon)
+	AWeapon* OverlappingWeapon;
 
-	float AO_Yaw;
-	float AO_Pitch;
-	float InterpAO_Yaw;
-	FRotator StartAimRotation;
-
-	ETurningInPlace TurningInPlace;
 	void TurnInPlace(float DeltaTime);
 
+	void HideCameraIfCharacterClose();
+
+	float CalculateSpeed();
+
+	void ElimTimerFinished();
+
+	ETurningInPlace TurningInPlace;
+
+	/* Component */
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* Grenade;
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	USpringArmComponent* SpringArm;
+
+	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UWidgetComponent* OverHeadWidget;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowprivateAccess = "true"))
+	UCombatComponent* Combat;
+	
+	UPROPERTY(VisibleAnywhere)
+	UBuffComponent* BuffComp;
+	
+	UPROPERTY(VisibleAnywhere)
+	ULagCompensationComponent* LagCompensation;
+
+	UNiagaraSystem* CrownSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* CrownComponent;
+
+	/* AnimMontage */
+
 	UPROPERTY(EditAnywhere, Category = "Combat")
-		class UAnimMontage* FireWeaponMontage;
+	UAnimMontage* FireWeaponMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	 UAnimMontage* HitReactMontage;
@@ -299,10 +330,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	 UAnimMontage* SwapWeaponMontage;
 
-	void HideCameraIfCharacterClose();
-
 	UPROPERTY(EditAnywhere)
 	float CameraThresHold = 200.f;
+
+	/* Turn In Place */
 
 	bool bRotateRootBone;
 
@@ -315,14 +346,24 @@ private:
 	float ProxyYaw;
 	
 	float TimeSinceLastMovementReplication;
-	
-	float CalculateSpeed();
+
+	float AO_Yaw;
+	float AO_Pitch;
+	float InterpAO_Yaw;
+	FRotator StartAimRotation;
+
+	/* Elim */
+
+	UFUNCTION()
+	void UpdateDissolveMaterial(float DissolveValue);
+
+	void StartDissolve();
 
 	UPROPERTY()
-	class ABlasterController* BlasterController;
+	ABlasterController* BlasterController;
 
 	UPROPERTY()
-	class UCharacterOverlay* CharacterOverlay;
+	UCharacterOverlay* CharacterOverlay;
 
 	bool bElimed = false;
 
@@ -330,8 +371,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float ElimDelay = 3.f;
-
-	void ElimTimerFinished();
 
 	bool bLeftGame = false;
 
@@ -343,11 +382,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	UCurveFloat* DissolveCurve;
 
-	UFUNCTION()
-	void UpdateDissolveMaterial(float DissolveValue); 
-
-	void StartDissolve();
-
 	UPROPERTY(VisibleAnywhere ,Category = Elim)
 	UMaterialInstanceDynamic* DynamicDissolveMaterialInstance;
 
@@ -355,19 +389,19 @@ private:
 	UMaterialInstance* DissolveMaterialInstance;
 
 	UPROPERTY(EditAnywhere, Category = Elim)
-		UMaterialInstance* RedDissolveMatInst;
+	UMaterialInstance* RedDissolveMatInst;
 	
 	UPROPERTY(EditAnywhere, Category = Elim)
-		UMaterialInstance* BlueDissolveMatInst;
+	UMaterialInstance* BlueDissolveMatInst;
 	
 	UPROPERTY(EditAnywhere, Category = Elim)
-		UMaterialInstance* RedMaterial;
+	UMaterialInstance* RedMaterial;
 	
 	UPROPERTY(EditAnywhere, Category = Elim)
-		UMaterialInstance* BlueMaterial;
+	UMaterialInstance* BlueMaterial;
 		
 	UPROPERTY(EditAnywhere, Category = Elim)
-		UMaterialInstance* OringinalMaterial;
+	UMaterialInstance* OringinalMaterial;
 
 	UPROPERTY(EditAnywhere, Category = Elim)
 	UParticleSystem* ElimBotEffect;
@@ -376,24 +410,16 @@ private:
 	UParticleSystemComponent* ElimBotComponent;
 
 	UPROPERTY(EditAnywhere, Category = Elim)
-	class USoundCue* ElimBotSound;
-
-	UPROPERTY(EditAnywhere)
-	class UNiagaraSystem* CrownSystem;
+	USoundCue* ElimBotSound;
 
 	UPROPERTY()
-	class UNiagaraComponent* CrownComponent;
-
-	UPROPERTY()
-	class ABlasterPlayerState* BlasterPlayerState;
-
-	bool bInputsSet = false;
+	ABlasterPlayerState* BlasterPlayerState;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AWeapon> DefaultWeaponClass;
 
 	UPROPERTY()
-	class ABlasterGameMode* BlasterGameMode;
+	ABlasterGameMode* BlasterGameMode;
 
 public:
 	void SetOverlappingWeapon(AWeapon* Weapon);

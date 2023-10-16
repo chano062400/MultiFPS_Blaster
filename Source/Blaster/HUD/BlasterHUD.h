@@ -6,17 +6,29 @@
 #include "GameFramework/HUD.h"
 #include "BlasterHUD.generated.h"
 
+class UTexture2D;
+class UCharacterOverlay;
+class UAnnouncement;
+class APlayerController;
+
 USTRUCT(BlueprintType)
 struct FHUDPackage
 {
 	GENERATED_BODY()
 public:
-	class UTexture2D* CrossHairsCenter;
+
+	UTexture2D* CrossHairsCenter;
+	
 	UTexture2D* CrossHairsLeft;
+	
 	UTexture2D* CrossHairsRight;
+	
 	UTexture2D* CrossHairsTop;
+	
 	UTexture2D* CrossHairsBottom;
+	
 	float CrossHairSpread;
+	
 	FLinearColor CrossHairColor;
 };
 
@@ -35,13 +47,13 @@ public:
 	TSubclassOf<class UUserWidget> CharacterOverlayClass;
 
 	UPROPERTY(EditAnywhere, Category = "Announcement")
-		TSubclassOf<class UUserWidget> AnnouncementClass;
+	TSubclassOf<class UUserWidget> AnnouncementClass;
 
 	UPROPERTY()
-	class UCharacterOverlay* CharacterOverlay;
+	UCharacterOverlay* CharacterOverlay;
 
 	UPROPERTY()
-		class UAnnouncement* Announcement;
+	UAnnouncement* Announcement;
 
 	void AddCharacterOverlay();
 
@@ -49,11 +61,11 @@ public:
 
 	void AddElimeAnnouncement(FString AttackerName, FString VictimName);
 
+	FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
+
 protected:
 
 	virtual void BeginPlay() override;
-
-
 
 private:
 
@@ -68,7 +80,7 @@ private:
 	TSubclassOf<class UElimAnnouncement> ElimAnnouncementClass;
 
 	UPROPERTY()
-	class APlayerController* OwningPlayer;
+	APlayerController* OwningPlayer;
 
 	UPROPERTY(EditAnywhere)
 	float ElimAnnouncementTime = 1.5f;
@@ -78,8 +90,4 @@ private:
 
 	UPROPERTY()
 	TArray<UElimAnnouncement*> ElimMessages;
-
-public:
-
-	FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
 };

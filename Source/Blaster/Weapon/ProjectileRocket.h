@@ -6,6 +6,9 @@
 #include "Projectile.h"
 #include "ProjectileRocket.generated.h"
 
+class USoundCue;
+class URocketMovementComponent;
+
 /**
  * 
  */
@@ -13,20 +16,19 @@ UCLASS()
 class BLASTER_API AProjectileRocket : public AProjectile
 {
 	GENERATED_BODY()
+
 public:
+
 	AProjectileRocket();
 
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& Event) override;
-
-	virtual void Destroyed() override;
 protected:
 
-	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
-	
 	virtual void BeginPlay() override;
 
+	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
+
 	UPROPERTY(EditAnywhere)
-	 class USoundCue* ProjectileLoopSound;
+	USoundCue* ProjectileLoopSound;
 
 	UPROPERTY()
 	UAudioComponent* ProjectileLoopSoundComponent;
@@ -35,9 +37,13 @@ protected:
 	USoundAttenuation* LoopingSoundAttenuation;
 
 	UPROPERTY(VisibleAnywhere)
-		class URocketMovementComponent* RocketMovementComponent;
+	URocketMovementComponent* RocketMovementComponent;
 
-private:
+public:
+
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& Event) override;
+
+	virtual void Destroyed() override;
 
 
 };

@@ -806,8 +806,6 @@ void ABlasterCharacter::Reload()
 
 void ABlasterCharacter::ThrowGrenadePressed()
 {
-
-
 	if (Combat)
 	{
 		if (Combat->bHoldingTheFlag) return;
@@ -956,8 +954,6 @@ void ABlasterCharacter::TurnInPlace(float DeltaTime)
 		}
 	}
 }
-
-
 
 void ABlasterCharacter::Tick(float DeltaTime)
 {

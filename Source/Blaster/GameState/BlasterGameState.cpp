@@ -21,6 +21,7 @@ void ABlasterGameState::UpdateTopScore(ABlasterPlayerState* ScoringPlayer)
 	if (TopScoringPlayers.Num() == 0)
 	{
 		TopScoringPlayers.Add(ScoringPlayer);
+		
 		TopScore = ScoringPlayer->GetScore();
 	}
 	else if (ScoringPlayer->GetScore() == TopScore)
@@ -30,7 +31,9 @@ void ABlasterGameState::UpdateTopScore(ABlasterPlayerState* ScoringPlayer)
 	else if(ScoringPlayer->GetScore() > TopScore)
 	{
 		TopScoringPlayers.Empty();
+		
 		TopScoringPlayers.AddUnique(ScoringPlayer);
+		
 		TopScore = ScoringPlayer->GetScore();
 	}
 }

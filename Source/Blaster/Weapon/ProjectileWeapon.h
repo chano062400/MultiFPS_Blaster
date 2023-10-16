@@ -25,6 +25,4 @@ private:
 	UPROPERTY(EditAnywhere) 
 	TSubclassOf<AProjectile> ServerSideRewindProjectileClass; // Replicated되지 않고 Local에서만 생성됨.
 
-
-
 };

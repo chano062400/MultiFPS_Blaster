@@ -13,7 +13,7 @@ UCLASS()
 class BLASTER_API AJumpPickup : public APickup
 {
 	GENERATED_BODY()
-	
+
 public:
 
 protected:
@@ -24,8 +24,8 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere)
-	float JumpBuff = 4000.f;
+		float JumpBuff = 4000.f;
 
 	UPROPERTY(EditAnywhere)
-		float JumpBuffTime = 30.f;
+	float JumpBuffTime = 30.f;
 };

@@ -17,6 +17,7 @@ namespace MatchState
 ABlasterGameMode::ABlasterGameMode()
 {
 	bDelayedStart = true; //게임을 바로 시작하지 않고 게임시작을 호출하기 전까지 대기시간을 가짐 - 폰이 바로 생성되지 않고 레벨에서 움직일 수만 있음.
+	
 	bTeamsMatch = false;
 }
 
@@ -77,7 +78,6 @@ void ABlasterGameMode::PlayerEliminated(ABlasterCharacter* EliminatedCharacter, 
 {
 	ABlasterPlayerState* AttackerPlayerState = AttackerController ? Cast<ABlasterPlayerState>(AttackerController->PlayerState) : nullptr;
 	ABlasterPlayerState* VictimPlayerState = VictimController ? Cast<ABlasterPlayerState>(VictimController->PlayerState) : nullptr;
-
 	ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
 
 	if (AttackerPlayerState && AttackerPlayerState != VictimPlayerState)

@@ -8,6 +8,12 @@
 #include "Blaster/BlasterTypes/Team.h"
 #include "Weapon.generated.h"
 
+class UTexture2D;
+class USoundCue;
+class USphereComponent;
+class UWidgetComponent;
+class UAnimationAsset;
+
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
 {
@@ -43,30 +49,6 @@ public:
 	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	virtual void OnRep_Owner() override;
-
-	void SetHUDAmmo();
-
-	void ShowPickupWidget(bool bShowWidget);
-	
-	virtual void Fire(const FVector& HitTarget);
-
-	virtual void Dropped();
-
-	void AddAmmo(int32 AmmoToAdd);
-
-	void EnableCustomDepth(bool Enable);
-
-	bool bDestroyWeapon = false;
-
-	UPROPERTY(EditAnywhere)
-	EFireType FireType;
-
-	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
-		bool bUseScatter = false;
-
-	FVector TraceEndScatter(const FVector& HitTarget);
-
 protected:
 
 	virtual void BeginPlay() override;
@@ -84,6 +66,12 @@ protected:
 
 	UFUNCTION()
 	virtual void  OnEndSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+		void OnPingTooHigh(bool bPingTooHigh);
+
+	UFUNCTION()
+		void OnRep_WeaponState();
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
 		float DistanceToSphere = 800.f; // 도착지점 구체까지 거리.
@@ -106,28 +94,30 @@ protected:
 	UPROPERTY()
 		class ABlasterController* BlasterOwnerController;
 
-	UFUNCTION()
-	void OnPingTooHigh(bool bPingTooHigh);
-
 private:
 
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAmmo(int32 ServerAmmo);
+
+	UFUNCTION(Client, Reliable)
+	void ClientAddAmmo(int32 AmmoToAdd);
+
+	void SpendRound();
+
 	UPROPERTY(EditAnywhere, Category = "Weapon")
-		USkeletalMeshComponent* WeaponMesh;
+	USkeletalMeshComponent* WeaponMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-		class USphereComponent* WeaponSphere;
+	USphereComponent* WeaponSphere;
 
 	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere, Category = "Weapon")
 	EWeaponState WeaponState;
 
-	UFUNCTION()
-	void OnRep_WeaponState();
-
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-	class UWidgetComponent* PickupWidget;
+	UWidgetComponent* PickupWidget;
 
 	UPROPERTY(EditAnywhere, Category= "Weapon")
-	class UAnimationAsset* FireAnimation;
+	UAnimationAsset* FireAnimation;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ABulletShells> BulletClass;
@@ -139,20 +129,12 @@ private:
 	float ZoomInterpSpeed = 20.f;
 
 	UPROPERTY(EditAnywhere)
-		float Ammo;
+	float Ammo;
 
 	int32 Sequence = 0; //처리되지 않은 서버 요청의 수.(Ammo)
 
-	UFUNCTION(Client, Reliable)
-	void ClientUpdateAmmo(int32 ServerAmmo);
-
-	UFUNCTION(Client, Reliable)
-	void ClientAddAmmo(int32 AmmoToAdd);
-
-	void SpendRound();
-
 	UPROPERTY(EditAnywhere)
-		float MaxAmmo;
+	float MaxAmmo;
 
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;
@@ -161,6 +143,7 @@ private:
 	ETeam Team;
 
 public:
+
 	void SetWeaponState(EWeaponState State);
 	
 	FORCEINLINE USphereComponent* GetWeaponSphere() const { return WeaponSphere; }
@@ -184,34 +167,58 @@ public:
 	FORCEINLINE float GetHeadShotDamage() const { return HeadShotDamage; }
 
 	FORCEINLINE ETeam GetTeam() const { return Team; }
+	
+	virtual void OnRep_Owner() override;
+
+	void SetHUDAmmo();
+
+	void ShowPickupWidget(bool bShowWidget);
+
+	virtual void Fire(const FVector& HitTarget);
+
+	virtual void Dropped();
+
+	void AddAmmo(int32 AmmoToAdd);
+
+	void EnableCustomDepth(bool Enable);
 
 	bool IsEmpty();
 
 	bool IsFull();
 
-	UPROPERTY(EditAnywhere, Category = CrossHairs)
-		class UTexture2D* CrossHairsCenter;
-
-	UPROPERTY(EditAnywhere, Category = CrossHairs)
-		UTexture2D* CrossHairsLeft;
-
-	UPROPERTY(EditAnywhere, Category = CrossHairs)
-		UTexture2D* CrossHairsRight;
-
-	UPROPERTY(EditAnywhere, Category = CrossHairs)
-		UTexture2D* CrossHairsTop;
-
-	UPROPERTY(EditAnywhere, Category = CrossHairs)
-		UTexture2D* CrossHairsBottom;
-
-	UPROPERTY(EditAnywhere, Category = Combat)
-		float FireDelay = .15f;
-
-	UPROPERTY(EditAnywhere, Category = Combat)
-		bool bAutomatic = true;
+	bool bDestroyWeapon = false;
 
 	UPROPERTY(EditAnywhere)
-		class USoundCue* EquipSound;
+	EFireType FireType;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+	bool bUseScatter = false;
+
+	FVector TraceEndScatter(const FVector& HitTarget);
+
+	UPROPERTY(EditAnywhere, Category = CrossHairs)
+	UTexture2D* CrossHairsCenter;
+
+	UPROPERTY(EditAnywhere, Category = CrossHairs)
+	UTexture2D* CrossHairsLeft;
+
+	UPROPERTY(EditAnywhere, Category = CrossHairs)
+	UTexture2D* CrossHairsRight;
+
+	UPROPERTY(EditAnywhere, Category = CrossHairs)
+	UTexture2D* CrossHairsTop;
+
+	UPROPERTY(EditAnywhere, Category = CrossHairs)
+	UTexture2D* CrossHairsBottom;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float FireDelay = .15f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	bool bAutomatic = true;
+
+	UPROPERTY(EditAnywhere)
+	USoundCue* EquipSound;
 
 
 };

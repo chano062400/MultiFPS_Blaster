@@ -6,6 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "ReturnToMainMenu.generated.h"
 
+class UButton;
+class UTextBlock;
+class UMultiplayerSessionsSubsystem;
+class APlayerController;
+
 /**
  * 
  */
@@ -16,6 +21,7 @@ class BLASTER_API UReturnToMainMenu : public UUserWidget
 	
 
 public:
+
 	void MenuSetup();
 
 	void MenuTearDown();
@@ -29,20 +35,21 @@ protected:
 
 	UFUNCTION()
 	void OnPlayerLeftGame();
+
 private:
 
 	UPROPERTY(meta= (BindWidget))
-	class UButton* ReturnButton;
+	UButton* ReturnButton;
 
 	UPROPERTY(meta= (BindWidget))
-	class UTextBlock* ReturnText;
+	UTextBlock* ReturnText;
 
 	UFUNCTION()
 		void ReturnButtonClicked();
 
 	UPROPERTY()
-	class UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
+	UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
 
 	UPROPERTY()
-	class APlayerController* PlayerController;
+	APlayerController* PlayerController;
 };

@@ -8,6 +8,14 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighPingDelegate, bool, bPingTooHigh);
 
+class UInputAction;
+class UInputMappingContext;
+class ABlasterHUD;
+class UUserWidget;
+class UReturnToMainMenu;
+class ABlasterCharacter;
+class ABlasterGameMode;
+
 /**
 *
 */
@@ -63,15 +71,15 @@ public:
 
 	void StopHighPingWarning();
 
-	float SingleTripTime = 0.f;
-
-	FHighPingDelegate HighPingDelegate;
-
 	void BroadCastElim(APlayerState* Attacker, APlayerState* Victim);
 
 	FString GetInfoText(TArray<class ABlasterPlayerState*>& Players);
 
 	FString GetTeamsInfoText(class ABlasterGameState* BlasterGameState);
+
+	float SingleTripTime = 0.f;
+
+	FHighPingDelegate HighPingDelegate;
 
 protected:
 
@@ -85,7 +93,36 @@ protected:
 	void ServerRequestServerTime(float TimeOfClientRequest);
 
 	UFUNCTION(Client, Reliable)
-		void ClientReportServerTime(float TimeOfClientRequest, float TimeServerReceiveClientRequest);
+	void ClientReportServerTime(float TimeOfClientRequest, float TimeServerReceiveClientRequest);
+
+	void CheckTimeSync(float DeltaTime);
+
+	UFUNCTION(Server, Reliable)
+	void ServerCheckMatchState();
+
+	UFUNCTION(Client, Reliable)
+	void ClientJoinMidGame(FName StateMatch, float Warmup, float Match, float StartingTime, float Cooldown);
+
+	void CheckPing(float DeltaTime);
+
+	virtual void SetupInputComponent() override;
+
+	void ShowReturnToMainMenu();
+
+	UFUNCTION(Client, Reliable)
+	void ClientElimAnnouncement(APlayerState* Attacker, APlayerState* Victim);
+
+	UPROPERTY(ReplicatedUsing = OnRep_ShowTeamScore)
+	bool bShowTeamScore = false;
+
+	UFUNCTION()
+	void OnRep_ShowTeamScore();
+
+	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Input)
+	UInputMappingContext* CharacterMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* QuitAction;
 
 	float ClientServerDelta = 0.f; //클라이언트와 서버의 시간 차이.
 
@@ -94,52 +131,30 @@ protected:
 
 	float TimeSyncRunningTime = 0.f;
 
-	void CheckTimeSync(float DeltaTime);
-
-	UFUNCTION(Server, Reliable)
-	void ServerCheckMatchState();
-
-	UFUNCTION(Client, Reliable)
-		void ClientJoinMidGame(FName StateMatch, float Warmup, float Match, float StartingTime, float Cooldown);
-
-	void CheckPing(float DeltaTime);
-
-	virtual void SetupInputComponent() override;
-
-	void ShowReturnToMainMenu();
-
-	UPROPERTY(EditAnyWhere, BlueprintReadOnly, Category = Input)
-		class UInputMappingContext* CharacterMappingContext;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-		class UInputAction* QuitAction;
-
-	UFUNCTION(Client, Reliable)
-	void ClientElimAnnouncement(APlayerState* Attacker, APlayerState* Victim);
-
-	UPROPERTY(ReplicatedUsing = OnRep_ShowTeamScore)
-		bool bShowTeamScore = false;
+private:
 
 	UFUNCTION()
-	void OnRep_ShowTeamScore();
+	void OnRep_MatchState();
 
-private:
+	UFUNCTION(Server, Reliable)
+	void ServerReportPingStatus(bool bHighPing);
+
 	UPROPERTY()
-	class ABlasterHUD* BlasterHUD;
+	ABlasterHUD* BlasterHUD;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> ReturnToMainMenuWidget;
+	TSubclassOf<UUserWidget> ReturnToMainMenuWidget;
 
 	UPROPERTY()
-	class UReturnToMainMenu* ReturnToMainMenu;
+	UReturnToMainMenu* ReturnToMainMenu;
 
 	bool bReturnToMainMenuOpen = false; 
 
 	UPROPERTY()
-	class ABlasterCharacter* BlasterCharacter;
+	ABlasterCharacter* BlasterCharacter;
 
 	UPROPERTY()
-		class ABlasterGameMode* BlasterGameMode;
+	ABlasterGameMode* BlasterGameMode;
 
 	float LevelStartingTime = 0.f;
 
@@ -154,12 +169,8 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_MatchState)
 	FName MatchState;
 
-	UFUNCTION()
-	void OnRep_MatchState();
-
 	UPROPERTY()
 	class UCharacterOverlay* CharacterOverlay;
-
 
 	float HUDHealth;
 
@@ -203,9 +214,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float CheckPingFrquency = 20.f;
-
-	UFUNCTION(Server, Reliable)
-	void ServerReportPingStatus(bool bHighPing);
 
 	UPROPERTY(EditAnywhere)
 	float HighPingThresHold = 50.f;
